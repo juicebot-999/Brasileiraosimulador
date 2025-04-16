@@ -150,11 +150,21 @@
       atualizarTabela();
     }
 
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
     function rodada() {
       if (rodadaAtual >= 30) return;
       rodadaAtual++;
       document.getElementById("rodadaNumero").innerText = `Rodada ${rodadaAtual} de 30`;
+
+      // Embaralha os times para gerar confrontos aleatórios
       const serie = serieAtual === "A" ? [...timesA] : [...timesB];
+      embaralhar(serie);  // Embaralha os times
       const tabela = serieAtual === "A" ? tabelaA : tabelaB;
       const resultados = [];
 
@@ -210,34 +220,26 @@
       // Ganho ao subir ou ser rebaixado
       if (promovidos.includes(meuTime)) {
         saldo += 50000000;
-        alert("Você subiu para a Série A! Ganhou R$50.000.000");
+        alert("Você subiu para a Série A! Ganhou R$50.000.000.");
+      } else if (rebaixados.includes(meuTime)) {
+        saldo += 50000000;
+        alert("Você foi rebaixado para a Série B! Ganhou R$50.000.000.");
       }
-      if (rebaixados.includes(meuTime)) {
-        saldo += 1000000;
-        alert("Você foi rebaixado para a Série B, mas ganhou R$1.000.000");
-      }
-
-      iniciarTabelas();
-      rodadaAtual = 0;
-      document.getElementById("rodadaNumero").innerText = `Rodada 1 de 30`;
-      document.getElementById("saldo").innerText = `Saldo: R$${saldo.toLocaleString()}`;
       atualizarTabela();
+      document.getElementById("saldo").innerText = `Saldo: R$${saldo}`;
     }
 
     function comprarJogador() {
       if (saldo >= 10000000) {
         saldo -= 10000000;
-        const tabela = serieAtual === "A" ? tabelaA : tabelaB;
-        if (meuTime in tabela) {
-          tabela[meuTime].forca += 0.5;
-          alert("Jogador comprado! Força do seu time aumentada.");
-          document.getElementById("saldo").innerText = `Saldo: R$${saldo.toLocaleString()}`;
-        }
+        alert("Jogador comprado com sucesso!");
+        document.getElementById("saldo").innerText = `Saldo: R$${saldo}`;
       } else {
-        alert("Você não tem dinheiro suficiente para comprar um jogador.");
+        alert("Você não tem saldo suficiente para comprar o jogador.");
       }
     }
 
+    // Preencher o select de time e preparar o jogo
     preencherSelect();
   </script>
 </body>
